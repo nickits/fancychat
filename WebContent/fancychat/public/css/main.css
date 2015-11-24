@@ -57,12 +57,22 @@ body
 
 .inputMessage {
   border: 10px solid #000;
+  width: 90%;
+  height: 100%;
+}
+
+.inputBotton {
+  width: 10%;
+}
+
+.inputMessageWrapper{
   bottom: 50px;
   height: 60px;
-  left: 250px;
+  left: 0;
   outline: none;
-  padding: 0 10px;
+  padding: 0 250px;
   position: fixed;
   width: 100%;
   margin-right: 250px;
+  overflow: auto;
 }
