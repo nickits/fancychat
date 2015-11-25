@@ -1,13 +1,18 @@
 <div class="chatArea">
-  <ul class="messages"></ul>
+  <ul class="messages">
+    <li ng-repeat="msg in messages">
+      <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+      <div class="alert alert-success" role="alert"><b>{{message.username}}</b> {{message.text}}</div>
+    </li>
+  </ul>
 </div>
 <div class="inputMessageWrapper">
   <div class="row">
-    <div class="col-xs-11" style="padding-right: 0px;">
-      <input class="inputMessage" placeholder="Type here..."/>
+    <div class="col-xs-10" style="padding-right: 0px;">
+      <input class="inputMessage" placeholder="Type here..." ng-model="message.text"/>
     </div>
-    <div class="col-xs-1" style="padding-left: 0px; padding-top: 2px;">
-      <button type="button" name="button" class="btn btn-primary btn-block btn-lg">Send</button>
+    <div class="col-xs-2" style="padding-left: 0px; padding-top: 2px;">
+      <button type="button" name="button" class="btn btn-primary btn-block btn-lg" ng-click="sendMessage(message.text)">Send</button>
     </div>
 
   </div>
