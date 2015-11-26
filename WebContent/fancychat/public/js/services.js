@@ -29,24 +29,31 @@ appServices.factory("restService", function($http){
   }
 });
 
-appServices.factory("socketService", function(){
-  var socket = io();
+appServices.factory("socketService", function($rootScope){
+  var socket = io.connect();
   return {
     init: function(room, username){
-      socket
       //join the room
       socket.emit('room', room);
       // Tell the server your username
       socket.emit('add user', username);
     },
-    send: function(message, room){
+    emit: function(eventName, data, callback){
       // tell server to execute 'new message' and send along one parameter
-      socket.emit('new message', message);
+      socket.emit(eventName, data, function(){
+        var args = arguments;
+        $rootScope.$apply(function(){
+          if(callback){ callback.apply(socket, args); }
+        });
+      });
     },
-    onReceive: function(receiveFn){
+    on: function(eventName, callback){
       // Whenever the server emits 'new message', update the chat body
-      socket.on('new message', function (data) {
-        if(receiveFn){ receiveFn(data); }
+      socket.on(eventName, function () {
+        var args = arguments;
+        $rootScope.$apply(function(){
+          if(callback){ callback.apply(socket, args); }
+        });
       });
     }
   }

@@ -11,6 +11,10 @@ app.config(['$routeProvider',
         templateUrl: 'pages/chat.html',
         controller: 'ChatCtrl'
       }).
+      when('/chat:chatId', {
+        templateUrl: 'pages/chat.html',
+        controller: 'ChatCtrl'
+      }).
       when('/call', {
         templateUrl: 'pages/call.html',
         controller: 'CallCtrl'

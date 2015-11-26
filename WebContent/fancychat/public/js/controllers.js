@@ -4,21 +4,34 @@ appControllers.controller("mainCtrl", function($scope){
   $scope.message = "Test";
 });
 
-appControllers.controller("ChatCtrl", function($scope, socketService){
+appControllers.controller("ChatCtrl",
+    function($scope, socketService, $location, $anchorScroll, $routeParams){
   $scope.message = {};
   $scope.messages = [];
 
-  socketService.init("1", "me");
+  var chatId = $routeParams.chatId ? $routeParams.chatId : "default";
 
-  socketService.onReceive(function(data){
+  socketService.init(chatId, "me");
+
+  socketService.on('new message', function(data){
     if(data){
-      $scope.messages.push(data);
+      data.color = "default";
+      addMessage(data);
     }
   });
 
   $scope.sendMessage = function(text){
-    socketService.send(text);
     $scope.message.text = "";
+    socketService.emit('new message', text);
+    addMessage({message: text, username: "me", color: "info", offset: "offset"});
+  }
+
+  var addMessage = function(msg){
+    $scope.messages.push(msg);
+    setTimeout(function(){
+      $location.hash('chatBottom');
+      $anchorScroll();
+    }, 100);
   }
 });
 
