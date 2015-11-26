@@ -1,7 +1,7 @@
 var appControllers = angular.module("appControllers", []);
 
 appControllers.controller("mainCtrl", function($scope){
-  $scope.message = "Test";
+  $scope.users = users;
 });
 
 appControllers.controller("ChatCtrl",
@@ -28,8 +28,12 @@ appControllers.controller("ChatCtrl",
 
   var addMessage = function(msg){
     $scope.messages.push(msg);
+    scrollBottom();
+  }
+
+  var scrollBottom = function(){
     setTimeout(function(){
-      $location.hash('chatBottom');
+      $location.hash('chatfix');
       $anchorScroll();
     }, 100);
   }
@@ -46,3 +50,15 @@ appControllers.controller("UsersCtrl", function($scope){
 appControllers.controller("UserDetailCtrl", function($scope){
   $scope.message = "Test";
 });
+
+var users = [
+  {name: "Name 1", id: "111", msgCount: 1},
+  {name: "Name 2", id: "112", msgCount: 2},
+  {name: "Name 3", id: "113", msgCount: 3},
+  {name: "Name 4", id: "114", msgCount: 4},
+  {name: "Name 5", id: "115", msgCount: 11},
+  {name: "Name 6", id: "116", msgCount: 12},
+  {name: "Name 7", id: "117", msgCount: 13},
+  {name: "Name 8", id: "118", msgCount: 133},
+  {name: "Name 9", id: "119", msgCount: 134}
+];
