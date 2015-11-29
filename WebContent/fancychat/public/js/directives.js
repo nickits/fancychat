@@ -6,6 +6,8 @@ appDirectives.directive("usersList", function(){
     templateUrl: "directives/usersList.html",
     scope: {
       users: "="
+    },
+    controller: function($scope){
     }
   }
 });

@@ -1,11 +1,12 @@
 <div class="side-menu-items">
   <input type="text" class="form-control" id="searchUser" placeholder="search user" ng-model="filterName">
   <ul class="list-group">
-    <li class="list-group-item" ng-repeat="user in users | filter:filterName">
-      <a href="#/chat:{{user.id}}#chatfix">
-        <span class="badge">{{user.msgCount}}</span>
-        {{user.name}}
-      </a>
-    </li>
+    <a href="#/chat:{{user.id}}#chatfix" ng-repeat="user in users | filter:filterName">
+      <li class="list-group-item">
+
+          <span class="badge">{{user.msgCount}}</span>
+          {{user.name}}
+      </li>
+    </a>
   </ul>
 </div>
