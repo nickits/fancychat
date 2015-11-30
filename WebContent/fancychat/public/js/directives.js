@@ -7,7 +7,10 @@ appDirectives.directive("usersList", function(){
     scope: {
       users: "="
     },
-    controller: function($scope){
+    controller: function($scope, $rootScope){
+      $scope.select = function(user){
+        $rootScope.room = { id: user.id };
+      }
     }
   }
 });

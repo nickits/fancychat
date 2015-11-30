@@ -1,0 +1,10 @@
+<input type="text" class="form-control" id="searchRoom" placeholder="search room" ng-model="roomName">
+<p></p>
+<ul class="list-group">
+  <a href="#/chat:{{room.id}}#chatfix" ng-repeat="room in rooms | filter:roomName" ng-click="select(room)">
+    <li class="list-group-item" style="float: left; min-width: 200px;">
+      {{room.name}}
+      <span class="badge">{{room.users.length}}</span>
+    </li>
+  </a>
+</ul>

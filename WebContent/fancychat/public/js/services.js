@@ -32,9 +32,9 @@ appServices.factory("restService", function($http){
 appServices.factory("socketService", function($rootScope){
   var socket = io.connect();
   return {
-    init: function(room, username){
+    init: function(roomId, username){
       //join the room
-      socket.emit('room', room);
+      socket.emit('room', roomId);
       // Tell the server your username
       socket.emit('add user', username);
     },
@@ -55,6 +55,72 @@ appServices.factory("socketService", function($rootScope){
           if(callback){ callback.apply(socket, args); }
         });
       });
+    }
+  }
+});
+
+appServices.factory("drawService", function(socketService){
+  var drawer = { current: "line" };
+  $( window ).on('resize', function() {
+    drawer.ctx.canvas.width = drawer.canvasContainer.width();
+    drawer.ctx.canvas.height = $(window).height() - 120;
+  });
+
+  return {
+    init: function(canvasId, canvasContainerId){
+
+    	drawer.c = document.getElementById(canvasId);
+    	drawer.ctx = drawer.c.getContext("2d");
+      drawer.canvasContainer = $("#" + canvasContainerId);
+      drawer.canvas = $("#" + canvasId);
+
+    	drawer.ctx.canvas.width = drawer.canvasContainer.width();
+    	drawer.ctx.canvas.height = $(window).height() - 120;
+
+    	var mouseDown = false;
+    	drawer.canvas.on( "mousedown", function(e){
+    		mouseDown = true;
+    		var data = {x: e.offsetX, y: e.offsetY};
+    		startline(data);
+    		socketService.emit('startline', data);
+    		//console.log('mousedown', e.offsetX, e.offsetY);
+    	} );
+
+    	drawer.canvas.on( "mouseup", function(e){
+    		mouseDown = false;
+    		//console.log('mouseup', e.offsetX, e.offsetY);
+    	} );
+
+    	drawer.canvas.on( "mousemove", function(e){
+    		if(mouseDown){
+    			var data = {x: e.offsetX, y: e.offsetY};
+    			drawline(data);
+    			socketService.emit('drawline', data);
+    			//console.log('mousemove', e.offsetX, e.offsetY);
+    		}
+    	} );
+
+    	var startline = function(data){
+    		//drawer.ctx.clearRect(0,0,200,200);
+    		drawer.ctx.beginPath();
+    		drawer.ctx.moveTo(data.x, data.y);
+    	};
+
+    	var drawline = function(data){
+    		drawer.ctx.lineTo(data.x, data.y);
+    		drawer.ctx.stroke();
+    	};
+
+    	socketService.on('startline', function (data) {
+    	   startline(data);
+    	});
+
+    	socketService.on('drawline', function (data) {
+    	   drawline(data);
+    	});
+    },
+    toolSet: function(data){
+      drawer.current = data.drawingTool;
     }
   }
 });
