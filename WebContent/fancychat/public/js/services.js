@@ -124,3 +124,15 @@ appServices.factory("drawService", function(socketService){
     }
   }
 });
+
+appServices.factory("roomService", function(){
+  var room = {};
+  return {
+    get: function(){
+      return room;
+    },
+    set: function(r){
+      room = r;
+    }
+  }
+});

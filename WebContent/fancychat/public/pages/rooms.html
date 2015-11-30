@@ -2,7 +2,7 @@
 <p></p>
 <ul class="list-group">
   <a href="#/chat:{{room.id}}#chatfix" ng-repeat="room in rooms | filter:roomName" ng-click="select(room)">
-    <li class="list-group-item" style="float: left; min-width: 200px;">
+    <li class="list-group-item room {{room.selected}}" style="float: left; min-width: 200px;">
       {{room.name}}
       <span class="badge">{{room.users.length}}</span>
     </li>

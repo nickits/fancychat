@@ -5,7 +5,7 @@ appControllers.controller("MainCtrl", function($scope, $routeParams){
 });
 
 appControllers.controller("ChatCtrl",
-    function($scope, socketService, $location, $anchorScroll, $routeParams){
+    function($scope, socketService, $location, $anchorScroll, $routeParams, roomService){
   $scope.message = {};
   $scope.messages = [];
 
@@ -56,11 +56,15 @@ appControllers.controller("UserDetailCtrl", function($scope){
   $scope.message = "Test";
 });
 
-appControllers.controller("RoomsCtrl", function($scope, $rootScope){
+appControllers.controller("RoomsCtrl", function($scope, roomService){
   $scope.rooms = rooms;
 
   $scope.select = function(room){
-    $rootScope.room = room;
+    var oldRoom = roomService.get();
+    if(oldRoom){ oldRoom.selected = ""; }
+    roomService.set(room);
+    room.selected = "selected";
+    $scope.$parent.room = room;
   }
 });
 
