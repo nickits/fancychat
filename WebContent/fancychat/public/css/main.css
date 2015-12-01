@@ -87,7 +87,7 @@ body
   background-color: white;
 }
 
-.room.seleted{
+.roomseleted{
   color: blue;
   border: 1px solid blue;
 }

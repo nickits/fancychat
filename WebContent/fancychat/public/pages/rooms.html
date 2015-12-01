@@ -1,10 +1,17 @@
 <input type="text" class="form-control" id="searchRoom" placeholder="search room" ng-model="roomName">
 <p></p>
-<ul class="list-group">
-  <a href="#/chat:{{room.id}}#chatfix" ng-repeat="room in rooms | filter:roomName" ng-click="select(room)">
-    <li class="list-group-item room {{room.selected}}" style="float: left; min-width: 200px;">
-      {{room.name}}
-      <span class="badge">{{room.users.length}}</span>
-    </li>
-  </a>
+<ul style="list-style: none; margin-left: -45px;">
+  <li style="float: left; min-width: 200px; margin: 5px" ng-repeat="room in rooms | filter:roomName">
+    <a href="#/chat:{{room.id}}#chatfix" ng-click="select(room)">
+      <div class="panel panel-info panel-{{room.selected}}">
+        <div class="panel-heading">
+            {{room.name}}
+            <span class="badge" style="float: right;">{{room.users.length}}</span>
+        </div>
+        <div class="panel-body">
+          {{room.name}} decription
+        </div>
+      </div>
+    </a>
+  </li>
 </ul>

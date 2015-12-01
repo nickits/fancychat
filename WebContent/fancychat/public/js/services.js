@@ -62,8 +62,12 @@ appServices.factory("socketService", function($rootScope){
 appServices.factory("drawService", function(socketService){
   var drawer = { current: "line" };
   $( window ).on('resize', function() {
+    var width = drawer.ctx.canvas.width;
+    var height = drawer.ctx.canvas.height;
+    var imgData=drawer.ctx.getImageData(0, 0, width, height);
     drawer.ctx.canvas.width = drawer.canvasContainer.width();
     drawer.ctx.canvas.height = $(window).height() - 120;
+    drawer.ctx.putImageData(imgData, 0, 0);
   });
 
   return {

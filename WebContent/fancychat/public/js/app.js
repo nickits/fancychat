@@ -56,6 +56,10 @@ app.config(['$routeProvider',
         templateUrl: 'pages/user-detail.html',
         controller: 'UserDetailCtrl'
       }).
+      when('/groups', {
+        templateUrl: 'pages/groups.html',
+        controller: 'GroupsCtrl'
+      }).
       when('/rooms', {
         templateUrl: 'pages/rooms.html',
         controller: 'RoomsCtrl'

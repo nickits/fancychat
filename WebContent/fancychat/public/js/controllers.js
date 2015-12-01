@@ -63,7 +63,7 @@ appControllers.controller("RoomsCtrl", function($scope, roomService){
     var oldRoom = roomService.get();
     if(oldRoom){ oldRoom.selected = ""; }
     roomService.set(room);
-    room.selected = "selected";
+    room.selected = "warning";
     $scope.$parent.room = room;
   }
 });
