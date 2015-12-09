@@ -6,10 +6,12 @@ var io = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 var assert = require('assert');
 
+var rest = require("./rest.js")(app);
+
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017/fancychat';
 var mdb = require('./mdb.js');
-/*
+
 MongoClient.connect(url, function(err, db) {
   assert.equal(null, err);
   console.log("Connected correctly to mongodb server.");
@@ -17,8 +19,7 @@ MongoClient.connect(url, function(err, db) {
 //      db.close();
 //  });
 //  insertDocument(db, function(){});
-  var mydb = mdb(db);
-  mydb.init(function(){
+  var mydb = mdb(db, function(){
 	  console.dir('init db');
   });
   findRestaurants(db, function() {
@@ -26,7 +27,7 @@ MongoClient.connect(url, function(err, db) {
   });
   //db.close();
 });
-*/
+
 var findRestaurants = function(db, callback) {
    var cursor =db.collection('restaurants').find( { "borough": "Manhattan" } ).limit(2);
    cursor.each(function(err, doc) {
@@ -38,7 +39,7 @@ var findRestaurants = function(db, callback) {
       }
    });
 };
-	
+
 server.listen(port, function () {
   console.log('Server listening at port %d', port);
 });
@@ -69,7 +70,7 @@ io.on('connection', function (socket) {
 	  socket.join(room);
 	  console.log("room:", room);
   });
-  
+
   // when the client emits 'new message', this listens and executes
   socket.on('new message', function (data) {
     // we tell the client to execute 'new message'
@@ -126,7 +127,7 @@ io.on('connection', function (socket) {
       });
     }
   });
-  
+
   socket.on('startline', function (data) {
 	  socket.broadcast.to(room).emit('startline', data);
   });
