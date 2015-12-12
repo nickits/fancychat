@@ -139,4 +139,23 @@
       }
     }
   });
+
+  appServices.factory("webrtcService", function(socketService){
+
+    return {
+      startLocalStream: function(){
+
+      },
+      stopLocalStream: function(){
+
+      },
+      startRemoteStream: function(){
+
+      },
+      stopRemoteStream: function(){
+
+      }
+    }
+  });
+
 }(angular.module("appServices", [])));
