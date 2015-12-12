@@ -10,7 +10,7 @@ module.exports = function(db, callback){
 				"createdDate" : new Date(),
 				"createdBy" : "Owner" + i
 		}, function(err, result) {
-			assert.equal(err, null);
+			//assert.equal(err, null);
 			console.log("Inserted a document into the rooms collection.");
 			callback(result);
 		});

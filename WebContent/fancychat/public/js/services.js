@@ -32,10 +32,10 @@
     var socket = io.connect();
     return {
       init: function(roomId, username){
-        //join the room
-        socket.emit('room', roomId);
         // Tell the server your username
         socket.emit('add user', username);
+        //join the room
+        socket.emit('room', roomId);
       },
       emit: function(eventName, data, callback){
         // tell server to execute 'new message' and send along one parameter

@@ -7,6 +7,8 @@ var port = process.env.PORT || 3000;
 var assert = require('assert');
 
 var rest = require("./rest.js")(app);
+var chat = require("./chat.js");
+var draw = require("./draw.js");
 
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017/fancychat';
@@ -48,10 +50,6 @@ server.listen(port, function () {
 app.use(express.static(__dirname + '/public'));
 
 // Chatroom
-
-// usernames which are currently connected to the chat
-var usernames = {};
-var numUsers = 0;
 var rooms = {};
 var addName = function(room, name){
 	if(!rooms[room]){
@@ -62,78 +60,57 @@ var addName = function(room, name){
 };
 
 io.on('connection', function (socket) {
-
   var addedUser = false;
-  var room = "default";
-  socket.on('room', function (data) {
-	  room = data;
-	  socket.join(room);
-	  console.log("room:", room);
-  });
+  var params = {
+    room: "default"
+  }
 
-  // when the client emits 'new message', this listens and executes
-  socket.on('new message', function (data) {
-    // we tell the client to execute 'new message'
-    socket.broadcast.to(room).emit('new message', {
-      username: socket.username,
-      message: data
-    });
+  socket.on('room', function (newRoom) {
+    if(newRoom !== params.room){
+      var oldRoom = params.room;
+  	  params.room = newRoom;
+  	  socket.join(params.room);
+  	  console.log("socket id", socket.id, "user", socket.username, "new room:", params.room);
+      socket.leave(oldRoom);
+      console.log("socket id", socket.id, "user", socket.username, "old room:", oldRoom);
+      // add the client's username to the global room list
+      addName(params.room, socket.username);
+      socket.emit('login', {
+        numUsers: rooms[params.room].num
+      });
+      // echo globally (all clients) that a person has connected
+      socket.broadcast.to(params.room).emit('user joined', {
+        username: socket.username,
+        numUsers: rooms[params.room].num
+      });
+    }
   });
 
   // when the client emits 'add user', this listens and executes
   socket.on('add user', function (username) {
     // we store the username in the socket session for this client
     socket.username = username;
-    // add the client's username to the global list
-    //usernames[username] = username;
-    addName(room, username);
-    //++numUsers;
     addedUser = true;
-    socket.emit('login', {
-      numUsers: rooms[room].num
-    });
-    // echo globally (all clients) that a person has connected
-    socket.broadcast.to(room).emit('user joined', {
-      username: socket.username,
-      numUsers: rooms[room].num
-    });
-  });
-
-  // when the client emits 'typing', we broadcast it to others
-  socket.on('typing', function () {
-    socket.broadcast.to(room).emit('typing', {
-      username: socket.username
-    });
-  });
-
-  // when the client emits 'stop typing', we broadcast it to others
-  socket.on('stop typing', function () {
-    socket.broadcast.to(room).emit('stop typing', {
-      username: socket.username
-    });
+    console.log("socket id", socket.id, "user", socket.username, "user joined");
   });
 
   // when the user disconnects.. perform this
   socket.on('disconnect', function () {
+    console.log("socket id", socket.id, "user", socket.username, "user disconnect", "current room:", params.room);
     // remove the username from global usernames list
-    if (addedUser) {
-      delete rooms[room][socket.username];
-      rooms[room].num--;
+    if (addedUser ) {
+      delete rooms[params.room][socket.username];
+      rooms[params.room].num--;
 
       // echo globally that this client has left
-      socket.broadcast.to(room).emit('user left', {
+      socket.broadcast.to(params.room).emit('user left', {
         username: socket.username,
-        numUsers: rooms[room].num
+        numUsers: rooms[params.room].num
       });
     }
   });
 
-  socket.on('startline', function (data) {
-	  socket.broadcast.to(room).emit('startline', data);
-  });
-
-  socket.on('drawline', function (data) {
-	  socket.broadcast.to(room).emit('drawline', data);
-  });
+  chat(socket, params);
+  draw(socket, params);
 
 });
