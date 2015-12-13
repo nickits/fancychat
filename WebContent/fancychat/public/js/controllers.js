@@ -38,7 +38,7 @@
     }
   });
 
-  appControllers.controller("CallCtrl", function($scope){
+  appControllers.controller("CallCtrl", function($scope, webrtcService){
     $scope.message = "Test";
   });
 

@@ -141,8 +141,72 @@
   });
 
   appServices.factory("webrtcService", function(socketService){
+    var localVideo = document.getElementById("local-video");
+    var miniVideo = document.getElementById("mini-video");
+    var remoteVideo = document.getElementById("remote-video");
+    var pc;
+
+    function createPeerConnection() {
+      var pc_config = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
+      try {
+        // Create an RTCPeerConnection via the polyfill (adapter.js).
+        pc = new RTCPeerConnection(pc_config);
+
+        // pc.onicecandidate = onIceCandidate;
+        //
+        // pc.onconnecting = onSessionConnecting;
+        // pc.onopen = onSessionOpened;
+        // pc.onaddstream = onRemoteStreamAdded;
+        // pc.onremovestream = onRemoteStreamRemoved;
+
+        console.log("Created RTCPeerConnnection with config:\n" + "  \"" +
+          JSON.stringify(pc_config) + "\".");
+      } catch (e) {
+        console.log("Failed to create PeerConnection, exception: " + e.message);
+        //alert("Cannot create RTCPeerConnection object; WebRTC is not supported by this browser.");
+          return;
+      }
+    }
+
+    var errorCallback = function(e) {
+      console.log('Reeeejected!', e);
+    }
+
+    function onUserMediaSuccess(stream) {
+      console.log("User has granted access to local media.");
+      // Call the polyfill wrapper to attach the media stream to this element.
+      attachMediaStream(localVideo, stream);
+      localVideo.style.opacity = 1;
+      localStream = stream;
+      // Caller creates PeerConnection.
+      //if (initiator)
+        maybeStart();
+    }
+
+    function maybeStart() {
+      //if (!started && localStream && channelReady) {
+        // ...
+        createPeerConnection();
+        // ...
+        pc.addStream(localStream);
+        started = true;
+        // Caller initiates offer to peer.
+        //if (initiator)
+          doCall();
+      //}
+    }
+
+    function doCall() {
+      console.log("Sending offer to peer.");
+      //pc.createOffer(setLocalAndSendMessage, null, mediaConstraints);
+    }
+
+    navigator.getUserMedia({video: true, audio: true}, onUserMediaSuccess, errorCallback);
 
     return {
+      init: function(miniVideoId, remoteVideoId, localVideoId){
+
+      },
       startLocalStream: function(){
 
       },
