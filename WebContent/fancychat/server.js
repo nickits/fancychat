@@ -14,21 +14,21 @@ var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017/fancychat';
 var mdb = require('./mdb.js');
 
-MongoClient.connect(url, function(err, db) {
-  assert.equal(null, err);
-  console.log("Connected correctly to mongodb server.");
-//  insertDocument(db, function() {
-//      db.close();
-//  });
-//  insertDocument(db, function(){});
-  var mydb = mdb(db, function(){
-	  console.dir('init db');
-  });
-  findRestaurants(db, function() {
-      db.close();
-  });
-  //db.close();
-});
+// MongoClient.connect(url, function(err, db) {
+//   assert.equal(null, err);
+//   console.log("Connected correctly to mongodb server.");
+// //  insertDocument(db, function() {
+// //      db.close();
+// //  });
+// //  insertDocument(db, function(){});
+//   var mydb = mdb(db, function(){
+// 	  console.dir('init db');
+//   });
+//   findRestaurants(db, function() {
+//       db.close();
+//   });
+//   //db.close();
+// });
 
 var findRestaurants = function(db, callback) {
    var cursor =db.collection('restaurants').find( { "borough": "Manhattan" } ).limit(2);

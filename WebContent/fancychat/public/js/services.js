@@ -141,67 +141,205 @@
   });
 
   appServices.factory("webrtcService", function(socketService){
-    var localVideo = document.getElementById("local-video");
-    var miniVideo = document.getElementById("mini-video");
-    var remoteVideo = document.getElementById("remote-video");
-    var pc;
+    var startButton = document.getElementById('startButton');
+    var callButton = document.getElementById('callButton');
+    var hangupButton = document.getElementById('hangupButton');
+    callButton.disabled = true;
+    hangupButton.disabled = true;
+    startButton.onclick = start;
+    callButton.onclick = call;
+    hangupButton.onclick = hangup;
 
-    function createPeerConnection() {
-      var pc_config = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
-      try {
-        // Create an RTCPeerConnection via the polyfill (adapter.js).
-        pc = new RTCPeerConnection(pc_config);
+    var startTime;
+    var localVideo = document.getElementById('localVideo');
+    var remoteVideo = document.getElementById('remoteVideo');
 
-        // pc.onicecandidate = onIceCandidate;
-        //
-        // pc.onconnecting = onSessionConnecting;
-        // pc.onopen = onSessionOpened;
-        // pc.onaddstream = onRemoteStreamAdded;
-        // pc.onremovestream = onRemoteStreamRemoved;
+    localVideo.addEventListener('loadedmetadata', function() {
+      trace('Local video videoWidth: ' + this.videoWidth +
+        'px,  videoHeight: ' + this.videoHeight + 'px');
+    });
 
-        console.log("Created RTCPeerConnnection with config:\n" + "  \"" +
-          JSON.stringify(pc_config) + "\".");
-      } catch (e) {
-        console.log("Failed to create PeerConnection, exception: " + e.message);
-        //alert("Cannot create RTCPeerConnection object; WebRTC is not supported by this browser.");
-          return;
+    remoteVideo.addEventListener('loadedmetadata', function() {
+      trace('Remote video videoWidth: ' + this.videoWidth +
+        'px,  videoHeight: ' + this.videoHeight + 'px');
+    });
+
+    remoteVideo.onresize = function() {
+      trace('Remote video size changed to ' +
+        remoteVideo.videoWidth + 'x' + remoteVideo.videoHeight);
+      // We'll use the first onsize callback as an indication that video has started
+      // playing out.
+      if (startTime) {
+        var elapsedTime = window.performance.now() - startTime;
+        trace('Setup time: ' + elapsedTime.toFixed(3) + 'ms');
+        startTime = null;
+      }
+    };
+
+    var localStream;
+    var pc1;
+    var pc2;
+    var offerOptions = {
+      offerToReceiveAudio: 1,
+      offerToReceiveVideo: 1
+    };
+
+    function getName(pc) {
+      return (pc === pc1) ? 'pc1' : 'pc2';
+    }
+
+    function getOtherPc(pc) {
+      return (pc === pc1) ? pc2 : pc1;
+    }
+
+    function gotStream(stream) {
+      trace('Received local stream');
+      localVideo.srcObject = stream;
+      localStream = stream;
+      callButton.disabled = false;
+    }
+
+    function start() {
+      trace('Requesting local stream');
+      startButton.disabled = true;
+      navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true
+      })
+      .then(gotStream)
+      .catch(function(e) {
+        alert('getUserMedia() error: ' + e.name);
+      });
+    }
+
+    function call() {
+      callButton.disabled = true;
+      hangupButton.disabled = false;
+      trace('Starting call');
+      startTime = window.performance.now();
+      var videoTracks = localStream.getVideoTracks();
+      var audioTracks = localStream.getAudioTracks();
+      if (videoTracks.length > 0) {
+        trace('Using video device: ' + videoTracks[0].label);
+      }
+      if (audioTracks.length > 0) {
+        trace('Using audio device: ' + audioTracks[0].label);
+      }
+      var servers = {"iceServers": [{"url": "stun:stun.l.google.com:19302"}]};
+      pc1 = new RTCPeerConnection(servers);
+      trace('Created local peer connection object pc1');
+      pc1.onicecandidate = function(e) {
+        onIceCandidate(pc1, e);
+      };
+      pc2 = new RTCPeerConnection(servers);
+      trace('Created remote peer connection object pc2');
+      pc2.onicecandidate = function(e) {
+        onIceCandidate(pc2, e);
+      };
+      pc1.oniceconnectionstatechange = function(e) {
+        onIceStateChange(pc1, e);
+      };
+      pc2.oniceconnectionstatechange = function(e) {
+        onIceStateChange(pc2, e);
+      };
+      pc2.onaddstream = gotRemoteStream;
+
+      pc1.addStream(localStream);
+      trace('Added local stream to pc1');
+
+      trace('pc1 createOffer start');
+      pc1.createOffer(onCreateOfferSuccess, onCreateSessionDescriptionError,
+          offerOptions);
+    }
+
+    function onCreateSessionDescriptionError(error) {
+      trace('Failed to create session description: ' + error.toString());
+    }
+
+    function onCreateOfferSuccess(desc) {
+      trace('Offer from pc1\n' + desc.sdp);
+      trace('pc1 setLocalDescription start');
+      pc1.setLocalDescription(desc, function() {
+        onSetLocalSuccess(pc1);
+      }, onSetSessionDescriptionError);
+      trace('pc2 setRemoteDescription start');
+      pc2.setRemoteDescription(desc, function() {
+        onSetRemoteSuccess(pc2);
+      }, onSetSessionDescriptionError);
+      trace('pc2 createAnswer start');
+      // Since the 'remote' side has no media stream we need
+      // to pass in the right constraints in order for it to
+      // accept the incoming offer of audio and video.
+      pc2.createAnswer(onCreateAnswerSuccess, onCreateSessionDescriptionError);
+    }
+
+    function onSetLocalSuccess(pc) {
+      trace(getName(pc) + ' setLocalDescription complete');
+    }
+
+    function onSetRemoteSuccess(pc) {
+      trace(getName(pc) + ' setRemoteDescription complete');
+    }
+
+    function onSetSessionDescriptionError(error) {
+      trace('Failed to set session description: ' + error.toString());
+    }
+
+    function gotRemoteStream(e) {
+      remoteVideo.srcObject = e.stream;
+      trace('pc2 received remote stream');
+    }
+
+    function onCreateAnswerSuccess(desc) {
+      trace('Answer from pc2:\n' + desc.sdp);
+      trace('pc2 setLocalDescription start');
+      pc2.setLocalDescription(desc, function() {
+        onSetLocalSuccess(pc2);
+      }, onSetSessionDescriptionError);
+      trace('pc1 setRemoteDescription start');
+      pc1.setRemoteDescription(desc, function() {
+        onSetRemoteSuccess(pc1);
+      }, onSetSessionDescriptionError);
+    }
+
+    function onIceCandidate(pc, event) {
+      if (event.candidate) {
+        getOtherPc(pc).addIceCandidate(new RTCIceCandidate(event.candidate),
+            function() {
+              onAddIceCandidateSuccess(pc);
+            },
+            function(err) {
+              onAddIceCandidateError(pc, err);
+            }
+        );
+        trace(getName(pc) + ' ICE candidate: \n' + event.candidate.candidate);
       }
     }
 
-    var errorCallback = function(e) {
-      console.log('Reeeejected!', e);
+    function onAddIceCandidateSuccess(pc) {
+      trace(getName(pc) + ' addIceCandidate success');
     }
 
-    function onUserMediaSuccess(stream) {
-      console.log("User has granted access to local media.");
-      // Call the polyfill wrapper to attach the media stream to this element.
-      attachMediaStream(localVideo, stream);
-      localVideo.style.opacity = 1;
-      localStream = stream;
-      // Caller creates PeerConnection.
-      //if (initiator)
-        maybeStart();
+    function onAddIceCandidateError(pc, error) {
+      trace(getName(pc) + ' failed to add ICE Candidate: ' + error.toString());
     }
 
-    function maybeStart() {
-      //if (!started && localStream && channelReady) {
-        // ...
-        createPeerConnection();
-        // ...
-        pc.addStream(localStream);
-        started = true;
-        // Caller initiates offer to peer.
-        //if (initiator)
-          doCall();
-      //}
+    function onIceStateChange(pc, event) {
+      if (pc) {
+        trace(getName(pc) + ' ICE state: ' + pc.iceConnectionState);
+        console.log('ICE state change event: ', event);
+      }
     }
 
-    function doCall() {
-      console.log("Sending offer to peer.");
-      //pc.createOffer(setLocalAndSendMessage, null, mediaConstraints);
+    function hangup() {
+      trace('Ending call');
+      pc1.close();
+      pc2.close();
+      pc1 = null;
+      pc2 = null;
+      hangupButton.disabled = true;
+      callButton.disabled = false;
     }
-
-    navigator.getUserMedia({video: true, audio: true}, onUserMediaSuccess, errorCallback);
 
     return {
       init: function(miniVideoId, remoteVideoId, localVideoId){

@@ -38,8 +38,9 @@
     }
   });
 
-  appControllers.controller("CallCtrl", function($scope, webrtcService){
-    $scope.message = "Test";
+  appControllers.controller("CallCtrl", function($scope, $routeParams, socketService, webrtcService){
+    var chatId = $routeParams.id;
+    socketService.init(chatId, "me");
   });
 
   appControllers.controller("DrawingCtrl", function($scope, drawService, $routeParams){
