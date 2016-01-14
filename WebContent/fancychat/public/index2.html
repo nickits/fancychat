@@ -23,7 +23,7 @@
       <div id="sidebar-wrapper" class="side-menu left-menu">
           <div class="side-menu-items">
             <div class="btn-group-vertical btn-block" role="group" aria-label="...">
-              <ul class="nav visible-md visible-lg">
+              <ul class="nav">
                 <li><a href="#/chat:{{room.id}}#chatfix" ng-hide="!room.id">Chat</a></li>
                 <li><a href="#/call:{{room.id}}" ng-hide="!room.id">Call</a></li>
                 <li><a href="#/media:{{room.id}}" ng-hide="!room.id">Media</a></li>
@@ -47,22 +47,22 @@
           <div class="page">
             <nav class="navbar navbar-default navbar-fixed-top">
               <div class="row">
-                <div class="col-xs-10">
-                  <div class="navbar-header">
+                <div class="col-xs-12">
+                  <div style="float: left;" class="visible-sm visible-xs">
                     <a id="menu-left-toggle" class="navbar-brand" href="#">
                       <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
                       Menu
                     </a>
                   </div>
-                </div>
-                <div class="col-xs-1">
-                  <button type="button" class="btn btn-default navbar-btn" style="float: right; margin-right: 10px">Sign in</button>
-                </div>
-                <div class="col-xs-1">
-                  <a id="menu-right-toggle" class="navbar-brand" href="#" style="float: right; width:100px;">
-                    Users
-                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
-                  </a>
+                  <div style="float: right;" class="visible-sm visible-xs">
+                    <a id="menu-right-toggle" class="navbar-brand" href="#" style="float: right; width:103px;">
+                      Users
+                      <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+                    </a>
+                  </div>
+                  <div style="float: right;">
+                    <button type="button" class="btn btn-default navbar-btn" style="float: right; margin-right: 10px">Sign in</button>
+                  </div>
                 </div>
               </div>
             </nav>
