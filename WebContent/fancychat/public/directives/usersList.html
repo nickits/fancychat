@@ -1,4 +1,4 @@
-<div class="side-menu-items">
+<div class="side-menu-items" style="padding: 10px;">
   <input type="text" class="form-control" id="searchUser" placeholder="search user" ng-model="filterName">
   <ul class="list-group">
     <a href="#/chat:{{user.id}}#chatfix" ng-repeat="user in users | filter:filterName" ng-click="select(user)">

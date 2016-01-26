@@ -19,62 +19,73 @@
     <![endif]-->
   </head>
   <body ng-controller="MainCtrl">
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="row">
-        <div class="col-xs-11">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="#">
-              <span class="glyphicon glyphicon-leaf" aria-hidden="true"></span>
-            </a>
+    <div id="wrapper">
+      <div id="sidebar-wrapper" class="side-menu left-menu">
+          <div class="side-menu-items">
+            <div class="btn-group-vertical btn-block" role="group" aria-label="...">
+              <ul class="nav">
+                <li><a href="#/chat:{{room.id}}#chatfix" ng-hide="!room.id">Chat</a></li>
+                <li><a href="#/call:{{room.id}}" ng-hide="!room.id">Call</a></li>
+                <li><a href="#/media:{{room.id}}" ng-hide="!room.id">Media</a></li>
+                <li><a href="#/drawing:{{room.id}}" ng-hide="!room.id">Drawing</a></li>
+                <li><a href="#/presentation:{{room.id}}" ng-hide="!room.id">Presentation</a></li>
+                <li><a href="#/screencast:{{room.id}}" ng-hide="!room.id">Screencast</a></li>
+                <li><a href="#/gallery:{{room.id}}" ng-hide="!room.id">Gallery</a></li>
+                <li><a href="#/games:{{room.id}}" ng-hide="!room.id">Games</a></li>
+                <li><a href="#/polls:{{room.id}}" ng-hide="!room.id">Polls</a></li>
+                <li><a href="#/quizes:{{room.id}}" ng-hide="!room.id">Quizes</a></li>
+                <li><a href="#/users">Users</a></li>
+                <li><a href="#/groups">Groups</a></li>
+                <li><a href="#/rooms">Rooms</a></li>
+                <li><a href="#/settings">Settings</a></li>
+                <li><a href="#/recent">Recent</a></li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div class="col-xs-1">
-          <button type="button" class="btn btn-default navbar-btn" style="float: right; margin-right: 10px">Sign in</button>
-        </div>
+        <div class="page-container">
+          <div class="page">
+            <nav class="navbar navbar-default navbar-fixed-top">
+              <div class="row">
+                <div class="col-xs-12">
+                  <div style="float: left;" class="visible-sm visible-xs">
+                    <a id="menu-left-toggle" class="navbar-brand" href="#">
+                      <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+                      Menu
+                    </a>
+                  </div>
+                  <div style="float: right;" class="visible-sm visible-xs">
+                    <a id="menu-right-toggle" class="navbar-brand" href="#" style="float: right; width:103px;">
+                      Users
+                      <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+                    </a>
+                  </div>
+                  <div style="float: right;">
+                    <button type="button" class="btn btn-default navbar-btn" style="float: right; margin-right: 10px">Sign in</button>
+                  </div>
+                </div>
+              </div>
+            </nav>
+            <div class="row">
+              <div class="col-xs-12" ng-view>{{message}}</div>
+            </div>
+            <nav class="navbar navbar-default navbar-fixed-bottom">
+              <div class="container-fluid">
+                <div class="navbar-header">
+                  <ul class="nav navbar-nav">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Profile</a></li>
+                    <li><a href="#">Messages</a></li>
+                  </ul>
+                </div>
+              </div>
+            </nav>
+         </div>
       </div>
-    </nav>
-    <div class="side-menu left-menu">
-      <div class="side-menu-items">
-        <div class="btn-group-vertical btn-block" role="group" aria-label="...">
-          <ul class="nav visible-md visible-lg">
-            <li><a href="#/chat:{{room.id}}#chatfix" ng-hide="!room.id">Chat</a></li>
-            <li><a href="#/call:{{room.id}}" ng-hide="!room.id">Call</a></li>
-            <li><a href="#/media:{{room.id}}" ng-hide="!room.id">Media</a></li>
-            <li><a href="#/drawing:{{room.id}}" ng-hide="!room.id">Drawing</a></li>
-            <li><a href="#/presentation:{{room.id}}" ng-hide="!room.id">Presentation</a></li>
-            <li><a href="#/screencast:{{room.id}}" ng-hide="!room.id">Screencast</a></li>
-            <li><a href="#/gallery:{{room.id}}" ng-hide="!room.id">Gallery</a></li>
-            <li><a href="#/games:{{room.id}}" ng-hide="!room.id">Games</a></li>
-            <li><a href="#/polls:{{room.id}}" ng-hide="!room.id">Polls</a></li>
-            <li><a href="#/quizes:{{room.id}}" ng-hide="!room.id">Quizes</a></li>
-            <li><a href="#/users">Users</a></li>
-            <li><a href="#/groups">Groups</a></li>
-            <li><a href="#/rooms">Rooms</a></li>
-            <li><a href="#/settings">Settings</a></li>
-            <li><a href="#/recent">Recent</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="page">
-      <div class="row">
-        <div class="col-xs-12" ng-view>{{message}}</div>
-      </div>
-  </div>
-  <div class="side-menu right-menu">
-    <users-list users="room.users"></users-list>
-  </div>
-  <nav class="navbar navbar-default navbar-fixed-bottom">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <ul class="nav navbar-nav">
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Profile</a></li>
-          <li><a href="#">Messages</a></li>
-        </ul>
+      <div id="sidebar-right-wrapper" class="side-menu right-menu">
+        <users-list users="room.users"></users-list>
       </div>
     </div>
-  </nav>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -88,5 +99,17 @@
     <script src="js/services.js"></script>
     <script src="js/directives.js"></script>
     <script src="js/app.js"></script>
+
+    <script>
+      $("#menu-left-toggle").click(function(e) {
+          e.preventDefault();
+          $("#wrapper").toggleClass("toggled");
+      });
+
+      $("#menu-right-toggle").click(function(e) {
+          e.preventDefault();
+          $("#wrapper").toggleClass("toggled-right");
+      });
+    </script>
   </body>
 </html>
