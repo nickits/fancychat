@@ -1,0 +1,23 @@
+<div class="chatArea">
+  <ul class="messages">
+    <li ng-repeat="msg in messages">
+      <p class="text-{{msg.color}} {{msg.offset}}">
+        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+        <b>{{msg.username}}</b> {{msg.message}}
+      </p>
+    </li>
+    <li id="chatfix"></li>
+  </ul>
+</div>
+<div class="inputMessageWrapper">
+  <form ng-submit="sendMessage(message.text)">
+    <div class="row">
+      <div class="col-xs-10" style="padding-right: 0px;">
+        <input class="inputMessage" placeholder="Type here..." ng-model="message.text"/>
+      </div>
+      <div class="col-xs-2" style="padding-left: 0px; padding-top: 2px;">
+        <input type="submit" name="button" class="btn btn-primary btn-block btn-lg" value="Send"/>
+      </div>
+    </div>
+  </form>
+</div>
