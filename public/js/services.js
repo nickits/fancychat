@@ -64,7 +64,7 @@
       var width = drawer.ctx.canvas.width;
       var height = drawer.ctx.canvas.height;
       var imgData=drawer.ctx.getImageData(0, 0, width, height);
-      drawer.ctx.canvas.width = drawer.canvasContainer.width();
+      drawer.ctx.canvas.width = drawer.canvasContainer.width() - 20;
       drawer.ctx.canvas.height = $(window).height() - 120;
       drawer.ctx.putImageData(imgData, 0, 0);
     });
@@ -77,7 +77,7 @@
         drawer.canvasContainer = $("#" + canvasContainerId);
         drawer.canvas = $("#" + canvasId);
 
-      	drawer.ctx.canvas.width = drawer.canvasContainer.width();
+      	drawer.ctx.canvas.width = drawer.canvasContainer.width() - 20;
       	drawer.ctx.canvas.height = $(window).height() - 120;
 
       	var mouseDown = false;
