@@ -15,17 +15,17 @@ body
 }
 
 #wrapper.toggled {
-    padding-left: 250px;
+    padding-left: 150px;
 }
 
 #sidebar-wrapper {
     border-right: 1px solid #3399f3;
     z-index: 1000;
     position: fixed;
-    left: 250px;
+    left: 150px;
     width: 0;
     height: 100%;
-    margin-left: -250px;
+    margin-left: -150px;
     overflow-y: auto;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
@@ -34,7 +34,7 @@ body
 }
 
 #wrapper.toggled #sidebar-wrapper {
-    width: 250px;
+    width: 150px;
 }
 
 #wrapper .page-container {
@@ -59,7 +59,7 @@ body
 }
 
 #wrapper.toggled .navbar{
-  left: 250px;
+  left: 150px;
 }
 
 #sidebar-right-wrapper {
@@ -98,25 +98,25 @@ body
 }
 
 #wrapper.toggled .inputMessageWrapper{
-  padding-left: 250px;
+  padding-left: 150px;
 }
 
 @media(min-width:993px) {
     #wrapper {
-        padding-left: 250px;
+        padding-left: 150px;
         padding-right: 250px;
     }
 
     #wrapper.toggled {
-        padding-left: 250px;
+        padding-left: 150px;
     }
 
     #sidebar-wrapper {
-        width: 250px;
+        width: 150px;
     }
 
     #wrapper.toggled #sidebar-wrapper {
-        width: 250px;
+        width: 150px;
     }
 
     #wrapper .page-container,
@@ -127,7 +127,7 @@ body
 
     #wrapper .navbar{
       right: 250px;
-      left: 250px;
+      left: 150px;
     }
 
     #wrapper.toggled-right {
@@ -139,7 +139,7 @@ body
     }
 
     #wrapper .inputMessageWrapper{
-      padding: 0 250px;
+      padding: 0 250px 0 150px;
     }
 }
 
@@ -181,10 +181,10 @@ body
   height: 60px;
   left: 0;
   outline: none;
-  padding: 0 250px;
+  padding: 0 150px;
   position: fixed;
   width: 100%;
-  margin-right: 250px;
+  margin-right: 150px;
   overflow: auto;
   -webkit-transition: all 0.5s ease;
   -moz-transition: all 0.5s ease;
