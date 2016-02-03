@@ -9,6 +9,7 @@ var assert = require('assert');
 var rest = require("./rest.js")(app);
 var chat = require("./chat.js");
 var draw = require("./draw.js");
+var webrtc = require("./webrtc.js");
 
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017/fancychat';
@@ -112,5 +113,5 @@ io.on('connection', function (socket) {
 
   chat(socket, params);
   draw(socket, params);
-
+  webrtc(socket, params);
 });

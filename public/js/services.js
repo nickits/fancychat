@@ -271,7 +271,19 @@
       // to pass in the right constraints in order for it to
       // accept the incoming offer of audio and video.
       pc2.createAnswer(onCreateAnswerSuccess, onCreateSessionDescriptionError);
+      //socketService.emit('createOffer', {desc: desc});
     }
+
+    socketService.on('createOffer', function (data) {
+      pc2.setRemoteDescription(data.desc, function() {
+        onSetRemoteSuccess(pc2);
+      }, onSetSessionDescriptionError);
+      trace('pc2 createAnswer start');
+      // Since the 'remote' side has no media stream we need
+      // to pass in the right constraints in order for it to
+      // accept the incoming offer of audio and video.
+      pc2.createAnswer(onCreateAnswerSuccess, onCreateSessionDescriptionError);
+    });
 
     function onSetLocalSuccess(pc) {
       trace(getName(pc) + ' setLocalDescription complete');
@@ -300,7 +312,14 @@
       pc1.setRemoteDescription(desc, function() {
         onSetRemoteSuccess(pc1);
       }, onSetSessionDescriptionError);
+      //socketService.emit('createAnswer', {desc: desc});
     }
+
+    socketService.on('createAnswer', function (data) {
+      pc1.setRemoteDescription(data.desc, function() {
+        onSetRemoteSuccess(pc1);
+      }, onSetSessionDescriptionError);
+    });
 
     function onIceCandidate(pc, event) {
       if (event.candidate) {

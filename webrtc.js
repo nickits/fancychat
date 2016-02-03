@@ -1,9 +1,15 @@
 module.exports = function(socket, params){
 
-  socket.on('message', function (message) {
+  socket.on('createOffer', function (message) {
     log('Got message:', message);
     // for a real app, would be room only (not broadcast)
-    socket.broadcast.emit('message', message);
+    socket.broadcast.emit('createOffer', message);
+  });
+
+  socket.on('createAnswer', function (message) {
+    log('Got message:', message);
+    // for a real app, would be room only (not broadcast)
+    socket.broadcast.emit('createAnswer', message);
   });
 
 	return {
